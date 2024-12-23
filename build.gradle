@@ -1,0 +1,49 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'maven-publish'
+}
+
+group = 'com.kh.edu.cstad.khotixs'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			groupId = 'com.kh.edu.cstad.khotixs'  // Specify groupId
+			artifactId = 'event-core'  // Specify artifactId
+			version = '0.0.1-SNAPSHOT'  // Specify version
+		}
+	}
+	repositories {
+		maven {
+			url = uri("http://34.121.176.49:8910/repository/maven-releases/")  // Nexus repository URL
+			credentials {
+				username = project.findProperty("nexus.username") ?: "admin"
+				password = project.findProperty("nexus.password") ?: "admin123"
+			}
+		}
+	}
+}
